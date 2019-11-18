@@ -6,6 +6,8 @@ Sometimes when your cluster grows, you can have an uneven size on nodes: for exa
 ## Installation
 ### Install with pip install
 
+1. Run `pip install py-citus-rebalancer`
+
 ### Install from source code
 
 1. Clone the github repository
