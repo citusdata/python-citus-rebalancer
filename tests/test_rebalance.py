@@ -67,6 +67,20 @@ def test_init_formation():
             assert node.is_too_big() is True
             assert node in formation.big_nodes
 
+    node1 = get_node_by_name('node-1-amazonaws.com', formation.nodes)
+    node2 = get_node_by_name('node-2-amazonaws.com', formation.nodes)
+    node4 = get_node_by_name('node-4-amazonaws.com', formation.nodes)
+    group = node4.shard_groups[0]
+    assert group.size == 900000000
+
+    # can be moved to node1
+    assert group.is_moveable_to_node(node1) is True
+    # node too big for node2
+    assert group.is_moveable_to_node(node2) is False
+
+    # Group is already moving
+    group.to_node = node2
+    assert group.is_moveable_to_node(node1) is False
 
 def test_find_necessary_moves_balanced_cluster():
     # Nodes are same size
