@@ -4,7 +4,7 @@ import re
 import psycopg2
 
 from .base import (get_data_from_citus_cluster, init_formation,
-                   find_necessary_moves)
+                   find_necessary_moves, get_master_mode_shard_commands)
 
 
 def sizeof_fmt(num, suffix='B'):
@@ -28,14 +28,15 @@ def find_ideal_rebalance(host, delta):
 
     formation, moved = find_necessary_moves(formation)
 
+    commands = get_master_mode_shard_commands(moved)
+
     print('Here are the future size of your nodes:\n')
     for node in formation.nodes:
         print('Node: %s will go from %s to %s' % (node.name, sizeof_fmt(node.original_size), sizeof_fmt(node.size)))
 
     print('Here are the commands to run')
-    for group in moved:
-        print("SELECT master_move_shard_placement(%d,'%s', 5432, '%s', 5432);" % (group.shards[0], group.node.name, group.to_node.name))
-
+    for command in commands:
+        print(command)
 
 if __name__ == '__main__':
     find_ideal_rebalance()

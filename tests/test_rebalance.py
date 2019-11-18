@@ -205,6 +205,14 @@ def test_necessary_moves_empty_nodes():
         assert group.to_node == small_node
         assert group.node == big_node
 
+    commands = get_master_mode_shard_commands(moved)
+    assert commands == ["SELECT master_move_shard_placement(46,'node-1-amazonaws.com', 5432, 'node-4-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(48,'node-1-amazonaws.com', 5432, 'node-4-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(50,'node-1-amazonaws.com', 5432, 'node-4-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(52,'node-1-amazonaws.com', 5432, 'node-4-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(54,'node-1-amazonaws.com', 5432, 'node-4-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(58,'node-1-amazonaws.com', 5432, 'node-4-amazonaws.com', 5432);"]
+
 
 def test_find_necessary_moves_unbalanced_cluster():
     nodes_data = [('node-1-amazonaws.com', 1000000000), ('node-2-amazonaws.com', 2000000000),
@@ -285,3 +293,14 @@ def test_find_necessary_moves_unbalanced_cluster():
     for group in moved:
         assert group.node.name in ('node-3-amazonaws.com', 'node-4-amazonaws.com')
         assert group.to_node.name in ('node-1-amazonaws.com', 'node-2-amazonaws.com')
+
+
+    commands = get_master_mode_shard_commands(moved)
+
+    assert commands == ["SELECT master_move_shard_placement(33,'node-3-amazonaws.com', 5432, 'node-1-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(35,'node-3-amazonaws.com', 5432, 'node-1-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(46,'node-4-amazonaws.com', 5432, 'node-1-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(48,'node-4-amazonaws.com', 5432, 'node-1-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(50,'node-4-amazonaws.com', 5432, 'node-2-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(52,'node-4-amazonaws.com', 5432, 'node-2-amazonaws.com', 5432);",
+                        "SELECT master_move_shard_placement(58,'node-4-amazonaws.com', 5432, 'node-2-amazonaws.com', 5432);"]

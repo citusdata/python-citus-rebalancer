@@ -87,3 +87,13 @@ def find_necessary_moves(formation):
         formation.set_small_nodes()
 
     return formation, moved
+
+
+def get_master_mode_shard_commands(moves):
+    commands = []
+
+    for group in moves:
+        commands.append("SELECT master_move_shard_placement(%d,'%s', 5432, '%s', 5432);"
+                        % (group.shards[0], group.node.name, group.to_node.name))
+
+    return commands
