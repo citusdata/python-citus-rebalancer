@@ -13,7 +13,11 @@ class Formation:
         self.nodes = nodes
 
     def set_big_nodes(self):
-        self.big_nodes = [node for node in self.nodes if node.is_too_big()]
+        self.big_nodes = []
+        for node in self.nodes:
+            if not node.is_too_big() or node.nb_resize > 5:
+                continue
+            self.big_nodes.append(node)
 
     def set_small_nodes(self):
         self.small_nodes = [node for node in self.nodes if node.is_too_small()]
@@ -26,6 +30,7 @@ class Node:
         self.formation = formation
         self.original_size = size
         self.shard_groups = []
+        self.nb_resize = 0
 
     def __repr__(self):
         return 'Node %s: size: %d' % (self.name, self.size)
@@ -38,6 +43,9 @@ class Node:
 
     def set_size(self, value):
         self.size = value
+
+    def set_resize(self, value):
+        self.nb_resize = value
 
     def set_shard_groups(self, groups):
         self.shard_groups = groups

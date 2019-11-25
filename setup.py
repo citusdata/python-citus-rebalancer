@@ -12,8 +12,8 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 # Fields marked as "Optional" may be commented out.
 
 setup(
-    name='py-citus-rebalancer',  # Required
-    version='1.0.1',  # Required
+    name='py-citus-rebalancer', # Required
+    version='1.0.4',  # Required
     description='A python command line tool to provide the commands necessary to run on citus to have a balanced cluster',
     url='https://github.com/citusdata/python-citus-rebalancer',
     author='Louise Grandjonc',

@@ -23,11 +23,16 @@ def sizeof_fmt(num, suffix='B'):
 @click.option('file_path', '--file', required=False, type=click.Path(),
               help='Path to the file you want to write the rebalance commands to. A good example would be rebalance.sql, you can then execute that file on your coordinator')
 def find_ideal_rebalance(host, delta, file_path):
+    print('Connecting to host')
     conn = psycopg2.connect(host)
+    print('Connected to host')
 
     # get data for the formation from citus cluster
     formation_size, nodes_data, shards_data = get_data_from_citus_cluster(conn)
     formation = init_formation(formation_size, nodes_data, shards_data, delta)
+
+    for node in formation.big_nodes:
+        print('Node %s has a size of %s, will find right rebalance' % (node.name, sizeof_fmt(node.size)))
 
     formation, moved = find_necessary_moves(formation)
 

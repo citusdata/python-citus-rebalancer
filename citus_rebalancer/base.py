@@ -35,14 +35,20 @@ def get_data_from_citus_cluster(connection):
 
     cursor = connection.cursor()
 
+    print('Retrieving size of the formation from citus metadata')
     cursor.execute(formation_query)
     formation_size = cursor.fetchone()[0]
+    print('Retrieved size of the formation from citus metadata')
 
+    print('Retrieving size of nodes from citus metadata')
     cursor.execute(nodes_query)
     nodes_data = cursor.fetchall()
+    print('Retrieved size of nodes from citus metadata')
 
+    print('Retrieving size of collocated groups from citus metadata')
     cursor.execute(shard_group_query)
     shard_data = cursor.fetchall()
+    print('Retrieved size of collocated groups from citus metadata')
 
     return formation_size, nodes_data, shard_data
 
@@ -71,6 +77,7 @@ def find_necessary_moves(formation):
 
     while formation.big_nodes and formation.small_nodes:
         big_node= formation.big_nodes[0]
+        print('Finding shard moves for the node %s' % big_node.name)
 
         smaller_nodes_copy = []
 
@@ -83,6 +90,8 @@ def find_necessary_moves(formation):
                 big_node.set_size(big_node.size - group.size)
                 group.set_to_node(small_node)
                 moved.append(group)
+
+        big_node.set_resize(big_node.nb_resize+1)
         formation.set_big_nodes()
         formation.set_small_nodes()
 
